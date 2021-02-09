@@ -43,6 +43,7 @@ private:
 	void LookUp(float AxisValue);
 	void LookRight(float AxisValue);
 	void Reload();
+	void HealthRegain(float DeltaTime);
 	
 	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	//void TakeDamage()
@@ -60,9 +61,13 @@ private:
 	UPROPERTY(VisibleAnywhere)
 		float Health;
 
-	
-
+	UPROPERTY(EditAnywhere)
+		float HealthTime = 5.0f;
+	UPROPERTY(VisibleAnywhere)
+		float HealthCounter = 0.f;
 
 	UPROPERTY()
 	AGun* Gun;
+	UPROPERTY()
+	bool IsDie = false;
 };

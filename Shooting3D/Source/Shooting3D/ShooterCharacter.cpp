@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "SimpleShooterGameModeBase.h"
+#include "ShooterAIController.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -30,8 +31,6 @@ void AShooterCharacter::BeginPlay()
 	Gun->SetOwner(this);///
 
 	Health = HealthMax;
-	
-
 }
 
 // Called every frame
@@ -39,6 +38,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	HealthRegain(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -89,6 +89,19 @@ void AShooterCharacter::Reload()
 	Gun->AmmoReload();
 }
 
+void AShooterCharacter::HealthRegain(float DeltaTime)
+{
+	if (GetController() != nullptr && GetController()->GetPawn()->IsPlayerControlled() && Health <= HealthMax && !IsDie)
+	{
+		HealthCounter += DeltaTime;
+
+		if (HealthCounter >= HealthTime)
+		{
+			Health++;
+		}
+	}
+}
+
 float AShooterCharacter::GetHPPercent() const
 {
 	return Health / HealthMax;
@@ -112,13 +125,25 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 
 	UE_LOG(LogTemp, Warning, TEXT("HP : %f.0f"), Health);
 
+	HealthCounter = 0.f;
+
+	
+	/*if (GetController() != nullptr )
+	{
+		AShooterAIController* AI = Cast<AShooterAIController>(GetController());
+		if (AI != nullptr)
+		{
+			AI->DamageTake(DamageToApply,IsDead());
+		}
+	}*/
+
 	if (IsDead())
 	{
+		IsDie = true;
 		ASimpleShooterGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASimpleShooterGameModeBase>();
 		if (GameMode != nullptr)
 		{
 			GameMode->PawnKilled(this);
-			
 		}
 
 		DetachFromControllerPendingDestroy();

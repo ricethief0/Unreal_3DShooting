@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 
 
+
 void AShooterPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -21,7 +22,7 @@ void AShooterPlayerController::BeginPlay()
 void AShooterPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)
 {
 	Super::GameHasEnded(EndGameFocus, bIsWinner);
-
+	
 	HUD->RemoveFromViewport();
 	if (bIsWinner)
 	{

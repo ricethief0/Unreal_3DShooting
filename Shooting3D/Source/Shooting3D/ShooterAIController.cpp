@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "ShooterCharacter.h"
+#include "Blueprint/UserWidget.h"
 void AShooterAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -17,7 +18,9 @@ void AShooterAIController::BeginPlay()
 		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 		GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
+		
 	}
+	
 	
 	//
 
@@ -34,21 +37,11 @@ bool AShooterAIController::IsDead()
 	return true;
 }
 
+
+
 void AShooterAIController::Tick(float DeltaTime) 
 {
 	Super::Tick(DeltaTime);
 
-	//APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-
-	//if (LineOfSightTo(PlayerPawn))
-	//{
-	//	GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
-	//	GetBlackboardComponent()->SetValueAsVector(TEXT("LastLocation"), PlayerPawn->GetActorLocation());
-	//	//MoveToActor(PlayerPawn, AcceptanceRadius);
-	//	//SetFocus(PlayerPawn);
-	//}
-	//else {
-	//	GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
-	//	//StopMovement();
-	//}
+	
 }

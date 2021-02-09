@@ -17,6 +17,7 @@ class SHOOTING3D_API AShooterAIController : public AAIController
 public:
 	virtual void Tick(float DeltaTime) override;
 	bool IsDead();
+	
 protected:
 	virtual void  BeginPlay() override;
 	
@@ -27,7 +28,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UBehaviorTree* AIBehavior;
 
-	
+	//UPROPERTY(EditAnywhere)
+	//	TSubclassOf<class UUserWidget> EnemyHUDClass;
+
+	//UPROPERTY()
+	//	UUserWidget* EnemyHUD;
+
+	UPROPERTY()
+		bool bIsDamage = false;
 
 
 };

@@ -24,21 +24,29 @@ AGun::AGun()
 
 void AGun::PullTrigger()
 {
-	if (Ammo <= 0) 
+
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	if (OwnerPawn == nullptr) return;
+	AController* OwnerController = OwnerPawn->GetController();
+	if (OwnerController == nullptr)return;
+	
+	if(OwnerPawn->IsPlayerControlled())
 	{
-		UGameplayStatics::SpawnSoundAttached(EmptyAmmoSound, Mesh, TEXT("MuzzleFlashSocket"));
-		return;
+		if (Ammo <= 0) 
+		{
+			UGameplayStatics::SpawnSoundAttached(EmptyAmmoSound, Mesh, TEXT("MuzzleFlashSocket"));
+			return;
+		}
+		Ammo--;
 	}
 
-	Ammo--;
+	
 	UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleFlashSocket"));
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlesh, Mesh, TEXT("MuzzleFlashSocket"));
 	
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	if (OwnerPawn == nullptr) return;
-	AController* OwnerController = 	OwnerPawn->GetController();
-	if (OwnerController == nullptr)return;
+	
 
+	
 	FVector Lotation;
 	FRotator Rotation;
 
@@ -65,11 +73,6 @@ void AGun::PullTrigger()
 			FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr);
 			HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Miss"));
-		}
-
 	}
 	//DrawDebugCamera(GetWorld(), Lotation, Rotation, 90, 2.0f, FColor::Red, true);
 }
