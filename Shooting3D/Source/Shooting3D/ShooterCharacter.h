@@ -7,6 +7,8 @@
 #include "ShooterCharacter.generated.h"
 
 class AGun;
+class UProgressBar;
+class UWidgetComponent;
 UCLASS()
 class SHOOTING3D_API AShooterCharacter : public ACharacter
 {
@@ -19,6 +21,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	
 
 public:	
 	// Called every frame
@@ -46,7 +50,7 @@ private:
 	void HealthRegain(float DeltaTime);
 	
 	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-	//void TakeDamage()
+	void HpBarView(float DeltaTime);
 
 	UPROPERTY(EditAnywhere)
 	float RotationRate = 10.f;
@@ -70,4 +74,16 @@ private:
 	AGun* Gun;
 	UPROPERTY()
 	bool IsDie = false;
+
+	UPROPERTY()
+	UProgressBar* ProgressBar;
+	
+	UPROPERTY(EditAnywhere)
+	UWidgetComponent* HpBarWidget;
+
+	UPROPERTY()
+	float HitCount = 0.f;
+	UPROPERTY(EditAnywhere)
+	float HpBarViewDelay = 5.f;
+
 };

@@ -10,13 +10,18 @@
 #include "Components/TextRenderComponent.h"
 #include "SimpleShooterGameModeBase.h"
 #include "ShooterAIController.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
+#include "Components/ProgressBar.h"
+
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBarWidget"));
+	HpBarWidget->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -30,7 +35,15 @@ void AShooterCharacter::BeginPlay()
 	//메쉬에 붙여줄 총에 이름을 3번째 인자에 쓰고, 지역성트랜스폼 형태로 두기 위해 2번째 인자를 저렇게 사용한다.
 	Gun->SetOwner(this);///
 
+	
 	Health = HealthMax;
+	
+	if (GetController() != nullptr &&  Cast<AShooterAIController>(GetController()) != nullptr)
+	{
+		ProgressBar = Cast<UProgressBar>(HpBarWidget->GetUserWidgetObject()->GetWidgetFromName(TEXT("Enemy_HP_ProgressBar")));
+		HpBarWidget->SetVisibility(false);
+		
+	}
 }
 
 // Called every frame
@@ -39,6 +52,10 @@ void AShooterCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	HealthRegain(DeltaTime);
+	
+	if (HpBarWidget == nullptr) return;
+		HpBarView(DeltaTime);
+	
 }
 
 // Called to bind functionality to input
@@ -128,18 +145,22 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	HealthCounter = 0.f;
 
 	
-	/*if (GetController() != nullptr )
+	if (GetController() != nullptr )
 	{
 		AShooterAIController* AI = Cast<AShooterAIController>(GetController());
 		if (AI != nullptr)
 		{
-			AI->DamageTake(DamageToApply,IsDead());
+			ProgressBar->SetPercent(GetHPPercent());
+			HpBarWidget->SetVisibility(true);
+			HitCount = 0.f;
 		}
-	}*/
+	}
 
 	if (IsDead())
 	{
 		IsDie = true;
+		//HpBar->RemoveFromViewport();
+		HpBarWidget->SetVisibility(false);
 		ASimpleShooterGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASimpleShooterGameModeBase>();
 		if (GameMode != nullptr)
 		{
@@ -153,6 +174,20 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 
 
 	return DamageToApply;
+}
+
+void AShooterCharacter::HpBarView(float DeltaTime)
+{
+	
+	if (!HpBarWidget->IsVisible())return;
+	
+	HitCount += DeltaTime;
+	if (HitCount >= HpBarViewDelay)
+	{
+		HitCount = 0.f;
+		HpBarWidget->SetVisibility(false);
+	}
+	
 }
 
 

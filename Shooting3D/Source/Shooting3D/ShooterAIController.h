@@ -28,14 +28,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UBehaviorTree* AIBehavior;
 
-	//UPROPERTY(EditAnywhere)
-	//	TSubclassOf<class UUserWidget> EnemyHUDClass;
-
-	//UPROPERTY()
-	//	UUserWidget* EnemyHUD;
 
 	UPROPERTY()
 		bool bIsDamage = false;
+
 
 
 };
