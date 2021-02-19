@@ -7,6 +7,7 @@
 #include "ShooterCharacter.generated.h"
 
 class AGun;
+class AAmmo;
 class UProgressBar;
 class UWidgetComponent;
 UCLASS()
@@ -40,6 +41,7 @@ public:
 		FString GetAmmo() const;
 
 	void Shoot();
+	void AmmoCharge(const int32 AmmoCount);
 
 private:
 	void MoveForward(float AxisValue);
@@ -48,6 +50,7 @@ private:
 	void LookRight(float AxisValue);
 	void Reload();
 	void HealthRegain(float DeltaTime);
+	void AmmoAppear();
 	
 	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	void HpBarView(float DeltaTime);
@@ -58,6 +61,8 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AGun> GunClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AAmmo> AmmoClass;
 	
 	UPROPERTY(EditDefaultsOnly)
 		float HealthMax;
@@ -72,6 +77,8 @@ private:
 
 	UPROPERTY()
 	AGun* Gun;
+	UPROPERTY()
+	AAmmo* AmmoActor;
 	UPROPERTY()
 	bool IsDie = false;
 

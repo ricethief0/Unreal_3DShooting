@@ -4,6 +4,7 @@
 #include "ShooterCharacter.h"
 #include "Engine/World.h"
 #include "Gun.h"
+#include "Ammo.h"
 #include "Components/InputComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -119,6 +120,13 @@ void AShooterCharacter::HealthRegain(float DeltaTime)
 	}
 }
 
+void AShooterCharacter::AmmoAppear()
+{
+	AmmoActor = GetWorld()->SpawnActor<AAmmo>(AmmoClass);
+	AmmoActor->SetActorLocation(GetActorLocation());
+	AmmoActor->SetOwner(this);///
+}
+
 float AShooterCharacter::GetHPPercent() const
 {
 	return Health / HealthMax;
@@ -134,6 +142,13 @@ void AShooterCharacter::Shoot()
 	Gun->PullTrigger();
 }
 
+void AShooterCharacter::AmmoCharge(const int32 AmmoCount)
+{
+	Gun->ChargeAmmoMax(AmmoCount);
+}
+
+
+
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float DamageToApply = 	Super::TakeDamage( DamageAmount,   DamageEvent,  EventInstigator,  DamageCauser);
@@ -145,22 +160,25 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	HealthCounter = 0.f;
 
 	
-	if (GetController() != nullptr )
+	if (GetController() != nullptr && Cast<AShooterAIController>(GetController()) != nullptr)
 	{
-		AShooterAIController* AI = Cast<AShooterAIController>(GetController());
-		if (AI != nullptr)
-		{
-			ProgressBar->SetPercent(GetHPPercent());
-			HpBarWidget->SetVisibility(true);
-			HitCount = 0.f;
-		}
+		ProgressBar->SetPercent(GetHPPercent());
+		HpBarWidget->SetVisibility(true);
+		HitCount = 0.f;
 	}
 
 	if (IsDead())
 	{
 		IsDie = true;
-		//HpBar->RemoveFromViewport();
-		HpBarWidget->SetVisibility(false);
+
+		if (GetController() != nullptr && Cast<AShooterAIController>(GetController()) != nullptr)
+		{
+			AmmoAppear();
+			HpBarWidget->SetVisibility(false);
+
+		}
+		
+		
 		ASimpleShooterGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASimpleShooterGameModeBase>();
 		if (GameMode != nullptr)
 		{

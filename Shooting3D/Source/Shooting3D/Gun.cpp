@@ -19,7 +19,7 @@ AGun::AGun()
 	SetRootComponent(Root);
 	Mesh->SetupAttachment(Root);
 
-	Ammo = AmmoMax;
+	Ammo = AmmoChargeCount;
 }
 
 void AGun::PullTrigger()
@@ -75,6 +75,16 @@ void AGun::PullTrigger()
 		}
 	}
 	//DrawDebugCamera(GetWorld(), Lotation, Rotation, 90, 2.0f, FColor::Red, true);
+}
+
+void AGun::AmmoReload()
+{
+	
+	int32 EmptyAmmo = AmmoChargeCount - Ammo;
+	if (CurruntAmmoMax < EmptyAmmo)
+		EmptyAmmo = CurruntAmmoMax;
+	Ammo += EmptyAmmo;
+	CurruntAmmoMax -= EmptyAmmo;
 }
 
 // Called when the game starts or when spawned

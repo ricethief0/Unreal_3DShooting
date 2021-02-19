@@ -17,8 +17,9 @@ public:
 
 	void PullTrigger();
 	inline int32 GetAmmo() const { return Ammo; }
-	inline int32 GetAmmoMax() const { return AmmoMax; }
-	void AmmoReload() { Ammo = AmmoMax; }
+	inline int32 GetAmmoMax() const { return CurruntAmmoMax; }
+	void AmmoReload();
+	void ChargeAmmoMax(const int32 AmmoCount) { CurruntAmmoMax += AmmoCount; }
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -57,9 +58,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	USoundBase* EmptyAmmoSound;
 	UPROPERTY(EditAnywhere)
-	int32 AmmoMax = 30;
+	int32 AmmoChargeCount = 30;
 	UPROPERTY(VisibleAnywhere)
 	int32 Ammo;
+	UPROPERTY(VisibleAnywhere)
+	int32 CurruntAmmoMax = 30;
 
 	
 };
