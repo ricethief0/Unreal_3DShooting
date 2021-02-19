@@ -124,7 +124,7 @@ void AShooterCharacter::AmmoAppear()
 {
 	AmmoActor = GetWorld()->SpawnActor<AAmmo>(AmmoClass);
 	AmmoActor->SetActorLocation(GetActorLocation());
-	AmmoActor->SetOwner(this);///
+	//AmmoActor->SetOwner(this);///
 }
 
 float AShooterCharacter::GetHPPercent() const
